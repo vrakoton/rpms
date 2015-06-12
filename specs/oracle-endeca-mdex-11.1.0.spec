@@ -10,7 +10,7 @@
 %global __os_install_post /usr/lib/rpm/brp-compress %{nil}
 
 %global product    oracle-endeca-mdex
-%global productdir %{mbsprefix}/endeca
+%global productdir %{productprefix}/endeca
 
 %global uid 240
 %global gid 240
@@ -32,8 +32,6 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 AutoReqProv:    no
 
-#Requires:       mbs-jdk
-
 %description
 Oracle Guided Search MDEX 11.1.0
 
@@ -51,12 +49,12 @@ Oracle Guided Search MDEX 11.1.0
 export DONT_STRIP=1
 rm -rf %{buildroot}
 
-mkdir -p %{buildroot}%{mbsprefix}
+mkdir -p %{buildroot}%{productprefix}
 
-pushd %{buildroot}%{mbsprefix}
+pushd %{buildroot}%{productprefix}
   unzip %{SOURCE0}
   chmod +x OCmdex6.5.1-Linux64_829811.sh \
-    && ./OCmdex6.5.1-Linux64_829811.sh --target %{buildroot}%{mbsprefix} \
+    && ./OCmdex6.5.1-Linux64_829811.sh --target %{buildroot}%{productprefix} \
     && rm OCmdex6.5.1-Linux64_829811.sh \
     && rm OCpresAPI6.5.1-Linux64_829811.tgz
   find $RPM_BUILD_ROOT -name '*.ini' -exec sed -i "s|${RPM_BUILD_ROOT}||g" {} \;

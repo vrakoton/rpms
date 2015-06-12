@@ -10,7 +10,7 @@
 %global __os_install_post /usr/lib/rpm/brp-compress %{nil}
 
 %global product    oracle-endeca-platformservices
-%global productdir %{mbsprefix}/endeca
+%global productdir %{productprefix}/endeca
 
 %global uid 240
 %global gid 240
@@ -50,12 +50,12 @@ Oracle Guided Search Platform Services 11.1.0
 export DONT_STRIP=1
 rm -rf %{buildroot}
 
-mkdir -p %{buildroot}%{mbsprefix}
+mkdir -p %{buildroot}%{productprefix}
 
-pushd %{buildroot}%{mbsprefix}
+pushd %{buildroot}%{productprefix}
   unzip %{SOURCE0}
   chmod +x OCplatformservices11.1.0-Linux64.bin \
-    && ./OCplatformservices11.1.0-Linux64.bin --silent --target %{buildroot}%{mbsprefix} < %{SOURCE1}\
+    && ./OCplatformservices11.1.0-Linux64.bin --silent --target %{buildroot}%{productprefix} < %{SOURCE1}\
     && rm OCplatformservices11.1.0-Linux64.bin
   find $RPM_BUILD_ROOT -type f -exec sed -i "s|${RPM_BUILD_ROOT}||g" {} \;
 popd
