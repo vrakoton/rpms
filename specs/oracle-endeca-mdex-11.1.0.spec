@@ -12,9 +12,7 @@
 %global product    oracle-endeca-mdex
 %global productdir %{productprefix}/endeca
 
-%global uid 240
-%global gid 240
-
+%global uid 245
 
 #-----------------------------------------------------------------------------
 # Main package
@@ -68,12 +66,13 @@ rm -rf %{buildroot}
 
 #-------------------------------------------------------------------------------
 %pre
-getent group oracle > /dev/null || \
-  /usr/sbin/groupadd -r -g %{gid} oracle 2> /dev/null || :
 getent passwd endeca > /dev/null || \
-  /usr/sbin/useradd -c "Endeca" -s /bin/bash -r -m -u %{uid} -g oracle \
+  /usr/sbin/useradd -c "Endeca" -s /bin/bash -r -m -u %{uid} \
     -d /opt/endeca endeca 2> /dev/null || :
 
+#-------------------------------------------------------------------------------
+%post
+chown -R endeca:endeca %{productprefix}/endeca/MDEX
 
 %files
 %defattr(-, root, root, -)

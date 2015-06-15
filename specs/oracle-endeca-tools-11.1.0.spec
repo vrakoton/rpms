@@ -2,8 +2,17 @@
 # author: Vina RAKOTONDRAINIBE (RE ENTER SAS)
 # 
 # Description:
+# ---------------
 # 
-# Spec file to build an Endeca Tools and Framework RPM for Oracle guided search 11.1.0
+# Spec file to build an Endeca Tools and Framework RPM for Oracle guided search 11.1.0.
+#
+# Pre-requisites:
+# ---------------
+# Prior to installation, you need to create a file called /etc/oraInst.loc which points
+# the Tools and Framework installer to a "fake" oracle inventory folder. The content of this file is:
+#
+# inventory_loc=/tmp/oraInventory
+# inst_group=rpmbuild
 #
 #-----------------------------------------------------------------------------
 
@@ -12,9 +21,7 @@
 %global product    oracle-endeca-tools
 %global productdir %{productprefix}/endeca
 
-%global uid 240
-%global gid 240
-
+%global uid 245
 
 #-----------------------------------------------------------------------------
 # Main package
@@ -53,10 +60,15 @@ rm -rf %{buildroot}
 
 mkdir -p %{buildroot}%{productprefix}
 
+# clean existing oracle inventory folder
+rm -rf /tmp/oraInventory \
+  && mkdir /tmp/oraInventory \
+  && chmod 777 /tmp/oraInventory
+
 pushd %{buildroot}%{productprefix}
   unzip %{SOURCE0} > /dev/null 2>&1
   cd cd/Disk1/install \
-  && ./silent_install.sh %{SOURCE1} ToolsAndFrameworks_1 %{buildroot}%{productprefix}/endeca/ToolsAndFrameworks_1 admin
+  && ./silent_install.sh %{SOURCE1} ToolsAndFrameworks %{buildroot}%{productprefix}/endeca/ToolsAndFrameworks admin
 
   find $RPM_BUILD_ROOT -type f -exec sed -i "s|${RPM_BUILD_ROOT}||g" {} \;
 popd
@@ -73,12 +85,13 @@ rm -rf %{buildroot}
 
 #-------------------------------------------------------------------------------
 %pre
-getent group oracle > /dev/null || \
-  /usr/sbin/groupadd -r -g %{gid} oracle 2> /dev/null || :
 getent passwd endeca > /dev/null || \
-  /usr/sbin/useradd -c "Endeca" -s /bin/bash -r -m -u %{uid} -g oracle \
+  /usr/sbin/useradd -c "Endeca" -s /bin/bash -r -m -u %{uid} \
     -d /opt/endeca endeca 2> /dev/null || :
 
+#-------------------------------------------------------------------------------
+%post
+chown -R endeca:endeca %{productprefix}/endeca/ToolsAndFrameworks
 
 %files
 %defattr(-, root, root, -)
